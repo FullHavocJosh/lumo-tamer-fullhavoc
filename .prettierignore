@@ -1,0 +1,3 @@
+# Upstream (ZeroTricks/lumo-tamer) has no prettier config; keep its formatting so fork commits stay
+# minimal and rebase cleanly.
+*
