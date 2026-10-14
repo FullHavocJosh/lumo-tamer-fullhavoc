@@ -1,19 +1,27 @@
-import express from 'express';
-import { getServerConfig, getMetricsConfig, authConfig } from '../app/config.js';
-import { resolveProjectPath } from '../app/paths.js';
-import { logger } from '../app/logger.js';
-import { setupAuthMiddleware, setupLoggingMiddleware, setupMetricsMiddleware } from './middleware.js';
-import { setupApiErrorHandler } from './error-handler.js';
-import { createHealthRouter } from './routes/health.js';
-import { createModelsRouter } from './routes/models.js';
-import { createChatCompletionsRouter } from './routes/chat-completions/index.js';
-import { createResponsesRouter } from './routes/responses/index.js';
-import { createAuthRouter } from './routes/auth.js';
-import { EndpointDependencies } from './types.js';
-import { RequestQueue } from './queue.js';
-import { initMetrics, type MetricsService } from '../app/metrics.js';
-import { createMetricsRouter } from './routes/metrics.js';
-import type { Application } from '../app/index.js';
+import express from "express";
+import {
+  getServerConfig,
+  getMetricsConfig,
+  authConfig,
+} from "../app/config.js";
+import { resolveProjectPath } from "../app/paths.js";
+import { logger } from "../app/logger.js";
+import {
+  setupAuthMiddleware,
+  setupLoggingMiddleware,
+  setupMetricsMiddleware,
+} from "./middleware.js";
+import { setupApiErrorHandler } from "./error-handler.js";
+import { createHealthRouter } from "./routes/health.js";
+import { createModelsRouter } from "./routes/models.js";
+import { createChatCompletionsRouter } from "./routes/chat-completions/index.js";
+import { createResponsesRouter } from "./routes/responses/index.js";
+import { createAuthRouter } from "./routes/auth.js";
+import { EndpointDependencies } from "./types.js";
+import { RequestQueue } from "./queue.js";
+import { initMetrics, type MetricsService } from "../app/metrics.js";
+import { createMetricsRouter } from "./routes/metrics.js";
+import type { Application } from "../app/index.js";
 
 export class APIServer {
   private expressApp: express.Application;
@@ -72,18 +80,26 @@ export class APIServer {
   }
 
   async start(): Promise<void> {
-    const { validateTemplateOnce } = await import('./instructions.js');
+    const { validateTemplateOnce } = await import("./instructions.js");
     validateTemplateOnce(this.serverConfig.instructions.template);
 
     return new Promise((resolve) => {
-      this.expressApp.listen(this.serverConfig.port, () => {
-        logger.info('========================================');
-        logger.info('lumo-tamer is ready!');
-        logger.info(`  base_url: http://localhost:${this.serverConfig.port}/v1`);
-        logger.info(`  api_key:  ${this.serverConfig.apiKey.substring(0, 3)}...`);
-        logger.info('========================================\n');
-        resolve();
-      });
+      this.expressApp.listen(
+        this.serverConfig.port,
+        process.env.LUMO_TAMER_HOST ?? "::",
+        () => {
+          logger.info("========================================");
+          logger.info("lumo-tamer is ready!");
+          logger.info(
+            `  base_url: http://localhost:${this.serverConfig.port}/v1`,
+          );
+          logger.info(
+            `  api_key:  ${this.serverConfig.apiKey.substring(0, 3)}...`,
+          );
+          logger.info("========================================\n");
+          resolve();
+        },
+      );
     });
   }
 }
