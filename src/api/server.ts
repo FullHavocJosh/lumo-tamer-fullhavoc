@@ -76,7 +76,7 @@ export class APIServer {
     validateTemplateOnce(this.serverConfig.instructions.template);
 
     return new Promise((resolve) => {
-      this.expressApp.listen(this.serverConfig.port, () => {
+      this.expressApp.listen(this.serverConfig.port, process.env.LUMO_TAMER_HOST ?? '::', () => {
         logger.info('========================================');
         logger.info('lumo-tamer is ready!');
         logger.info(`  base_url: http://localhost:${this.serverConfig.port}/v1`);
